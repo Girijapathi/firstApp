@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
-import "./Person/Person.css";
-import Person from "./Person/Person";
+//import classes from './App.css';
+import "../Persons/Person/Person.css";
+import PersonsList from "../Persons/Persons";
+import Cockpit from "../Cockpit/Cockpit";
 class App extends Component {
 
   // create state object
@@ -21,7 +22,7 @@ class App extends Component {
       return person.id === id;
     })
     // get person with that index, respect mutation
-    const person = {...this.state.person[personIndex]};
+    const person = { ...this.state.person[personIndex] };
     // add value from text to person object
     person.name = event.target.value;
     // copy person list from state 
@@ -37,7 +38,7 @@ class App extends Component {
   // show/hide person list
   toggleClickHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState({showPersons: !doesShow});
+    this.setState({ showPersons: !doesShow });
   };
 
   // delete person on click of person name
@@ -46,48 +47,31 @@ class App extends Component {
     //const persons = this.state.person;
     const persons = [...this.state.person]; // js spread operator
     persons.splice(personIndex, 1); // delete person from array
-    this.setState({person: persons}); // set state
+    this.setState({ person: persons }); // set state
   }
   // Render/re-render dom
-  render() {
-    const buttonStyle = {
-      backgroundColor: "green",
-      padding: "10px",
-      border: "1px solid green",
-      cursor: "pointer",
-      margin: "10px 0 5px 0",
-
-    };
+  render () {
     let persons = null;
-    if(this.state.showPersons){ // conditions
+    if (this.state.showPersons) { // conditions
       persons = (
         <div>
-          {this.state.person.map((p, index) =>{ // looping
-            return <Person 
-            name={p.name}
-            age={p.age}
-            key={p.id}
-            click={() => this.deletePersonHandler(index)}
-            changed={(event) => this.nameChangeHandler(event, p.id)} /> // dynamic rendering from server
-          })}
+          <PersonsList
+            persons={this.state.person}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangeHandler}
+          />
         </div>
       );
-      buttonStyle.backgroundColor = "red";
-    }
-    // adding dynamic css classes
-    const classes = [];
-    if(this.state.person.length <= 2){
-      classes.push("red");
-    }
-    if(this.state.person.length <= 1){
-      classes.push("bold");
     }
     // static and dynamic data rendering
     return (
       <div className="App">
-        <button onClick={this.toggleClickHandler} style={buttonStyle}>Toggle person</button>
-        <p className={classes.join(' ')}>This is really cool stuff!</p>
-        { persons }
+        <Cockpit
+          persons={this.state.person}
+          showPersons={this.state.showPersons}
+          clicked={this.toggleClickHandler}
+        />
+        {persons}
       </div>
     );
     // static data rendering
@@ -95,7 +79,7 @@ class App extends Component {
     //     <button onClick={this.swithNameHandler.bind(this, "Girijapathi")} style={style}>Show full name</button>
     //     <Person name={this.state.person[0].name} click={() => this.swithNameHandler("G D Math")}/>
     //     <Person name={this.state.person[1].name} changed={this.changeNameHandler}></Person>
-        
+
     //     <hr/>
     //return React.createElement("div", {className: "App"}, React.createElement("h1", null, "this is difficult!"));
   }
